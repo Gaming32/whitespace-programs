@@ -1,0 +1,70 @@
+include "lib/std.wsa"
+
+;; Heap map
+;; 0 -> (readiStack) temp value
+;; 1 -> (top-level)	 answer
+;; 2 -> (top-level)  guess count
+
+
+push 1
+call getAnswer
+store
+
+prints "Guess a random number from 1-100!\n"
+push 2
+push 0
+store
+
+.guess:
+push 2
+dup
+retrieve
+push 1
+add
+store
+
+prints "Enter guess: "
+call readiStack
+retrieve 1
+sub
+dup
+jz .win
+prints "That answer is too "
+jn .smaller
+prints "high"
+jmp .finishPrint
+.smaller:
+prints "low"
+.finishPrint:
+prints "!\n"
+jmp .guess
+
+.win:
+retrieve 1
+printi
+prints " was correct!\nYou won in "
+retrieve 2
+printi
+prints " guesses!\n"
+end
+
+
+getAnswer:
+	prints "Enter seed: "
+	call readiStack
+	push 1664525
+	mul
+	push 1013904223
+	add
+	push 100
+	mod
+	push 1
+	add
+	ret
+
+
+readiStack:
+	push 0
+	readi
+	retrieve 0
+	ret
